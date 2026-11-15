@@ -3,236 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#eaf4fc">
+<meta name="theme-color" content="#f5f5f7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="내 부동산">
 <title>내 부동산 관리</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='5' fill='%231a2b6d'/><path d='M6 11.5 12 7l6 4.5M7.5 11v6.5h9V11' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root {
-    --bg: #eaf4fc;
+    --bg: #f5f5f7;
     --surface: #ffffff;
-    --surface-2: #f4f9fe;
-    --text: #16293a;
-    --text-dim: #4f6679;
-    --accent: #3d9be0;
-    --accent-deep: #2580c7;
-    --accent-soft: #dcedfb;
-    --ok: #23976c;
-    --ok-soft: #dff5ec;
-    --late: #d9603f;
-    --late-soft: #fde8e1;
-    --due: #b98314;
-    --due-soft: #fdf3d7;
-    --border: #d5e6f4;
-    --shadow: 0 2px 14px rgba(60, 120, 170, 0.10);
+    --surface-2: #f6f7f9;
+    --text: #0f1115;
+    --text-dim: #4a5263;
+    --faint: #6a7280;
+    --accent: #1a2b6d;
+    --accent-deep: #13215a;
+    --accent-soft: #e9ecf3;
+    --ok: #00704f;
+    --ok-soft: #e3f7f0;
+    --late: #c8323a;
+    --late-line: #d64545;
+    --late-soft: #fdecee;
+    --due: #b45400;
+    --due-soft: #fff3e8;
+    --border: rgba(15, 17, 21, 0.12);
+    --border-2: rgba(15, 17, 21, 0.2);
+    --line: #c5cad3;
+    --shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --r: 10px;
   }
 
   html { font-size: 19px; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; border: none; background: none; -webkit-tap-highlight-color: transparent; }
+  svg { display: block; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     min-height: 100vh;
     display: flex;
     justify-content: center;
+    letter-spacing: -0.01em;
     -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .app {
-    width: 100%;
-    max-width: 430px;
-    padding: 24px 16px calc(110px + env(safe-area-inset-bottom));
-  }
-
+  .app { width: 100%; max-width: 430px; padding: 20px 16px calc(110px + env(safe-area-inset-bottom)); }
   [hidden] { display: none !important; }
 
-  /* 헤더 */
-  .header { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
-  .help-btn {
-    flex: none; height: 40px; padding: 0 13px; border-radius: 99px; font-size: 0.85rem; font-weight: 700;
-    background: var(--surface); color: var(--accent-deep); box-shadow: var(--shadow); white-space: nowrap;
-  }
-  .help { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px 15px; margin-bottom: 10px; }
-  .help h3 { font-size: 1.02rem; margin-bottom: 8px; }
-  .help ol, .help ul { padding-left: 1.25rem; }
-  .help li { font-size: 0.92rem; line-height: 1.6; margin-bottom: 4px; word-break: keep-all; }
-  .help p { font-size: 0.92rem; line-height: 1.6; word-break: keep-all; }
-  .help .chip { display: inline-block; padding: 3px 10px; font-size: 0.8rem; }
-  .help .warn { color: var(--late); font-weight: 600; }
+  /* 머리글 */
+  .header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
   .logo {
-    width: 42px; height: 42px; flex: none;
+    width: 40px; height: 40px; flex: none; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; background: var(--surface); border-radius: 50%;
-    box-shadow: var(--shadow);
+    background: var(--accent); color: #fff;
   }
-  .header h1 { font-size: 1.2rem; font-weight: 700; white-space: nowrap; }
-  .tagline { font-size: 0.8rem; color: var(--text-dim); margin-top: 2px; }
+  .logo svg { width: 22px; height: 22px; }
+  .header h1 { font-size: 1.16rem; font-weight: 700; white-space: nowrap; }
+  .tagline { font-size: 0.74rem; color: var(--faint); margin-top: 1px; white-space: nowrap; }
   .header .grow { flex: 1; min-width: 0; }
-  .icon-btn {
-    width: 40px; height: 40px; flex: none; border-radius: 50%;
-    background: var(--surface); box-shadow: var(--shadow); font-size: 1.05rem;
+  .help-btn {
+    flex: none; height: 40px; padding: 0 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    background: var(--surface); color: var(--text); border: 1px solid var(--border-2); white-space: nowrap;
   }
 
   /* 월 선택 + 요약 */
-  .summary {
-    background: linear-gradient(145deg, #4aa8ea, #2f86cf);
-    color: #fff; border-radius: 20px; padding: 16px 16px 18px;
-    box-shadow: 0 6px 20px rgba(47, 134, 207, 0.28);
+  .month-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 6px; box-shadow: var(--shadow);
   }
-  .month-nav { display: flex; align-items: center; justify-content: space-between; }
   .month-nav button {
-    width: 36px; height: 36px; border-radius: 50%; color: #fff;
-    background: rgba(255,255,255,0.2); font-size: 1.1rem;
+    width: 42px; height: 42px; border-radius: 7px; font-size: 1.2rem; line-height: 1;
+    background: var(--accent-soft); color: var(--accent);
   }
   .month-nav strong { font-size: 1.05rem; font-weight: 700; }
-  .sum-main { margin-top: 14px; }
-  .sum-main small { display: block; font-size: 0.85rem; opacity: 0.9; }
-  .sum-main b { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
-  .bar { height: 7px; border-radius: 99px; background: rgba(255,255,255,0.28); margin-top: 12px; overflow: hidden; }
-  .bar i { display: block; height: 100%; background: #fff; border-radius: 99px; }
-  .sum-row { display: flex; gap: 8px; margin-top: 12px; }
-  .sum-row div { flex: 1; min-width: 0; background: rgba(255,255,255,0.16); border-radius: 12px; padding: 9px 10px; }
-  .sum-row small { display: block; font-size: 0.78rem; opacity: 0.9; }
-  .sum-row b { font-size: 0.98rem; }
+  .sum-main, .sum-row div {
+    background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--accent);
+    border-radius: var(--r); box-shadow: var(--shadow);
+  }
+  .sum-main { margin-top: 10px; padding: 13px 15px 15px; }
+  .sum-main small, .sum-row small { display: block; font-size: 0.78rem; color: var(--faint); font-weight: 500; }
+  .sum-main b { display: block; font-size: 1.65rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; }
+  .bar { height: 8px; border-radius: 4px; background: var(--accent-soft); margin-top: 10px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .sum-row { display: flex; gap: 10px; margin-top: 10px; }
+  .sum-row div { flex: 1; min-width: 0; padding: 11px 13px 12px; }
+  .sum-row div:last-child { border-top-color: var(--late-line); }
+  .sum-row b { display: block; font-size: 1rem; font-weight: 700; margin-top: 2px; }
 
   .section-title {
-    display: flex; align-items: baseline; justify-content: space-between;
-    margin: 22px 4px 10px; font-size: 0.92rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 24px 2px 10px; font-size: 0.95rem; font-weight: 700;
   }
-  .section-title span { font-size: 0.78rem; font-weight: 400; color: var(--text-dim); }
+  .section-title span { font-size: 0.8rem; font-weight: 500; color: var(--faint); }
 
   /* 부동산 카드 */
   .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 18px; padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow);
+    background: var(--surface); border: 1px solid var(--border); border-left: 6px solid var(--line);
+    border-radius: var(--r); padding: 14px 14px 14px 13px; margin-bottom: 10px; box-shadow: var(--shadow);
   }
-  .card-top { display: flex; align-items: flex-start; gap: 10px; }
+  .card.st-paid { border-left-color: var(--accent); }
+  .card.st-late { border-left-color: var(--late-line); }
+  .card.st-due { border-left-color: #e08a2c; }
+  .card-top { display: flex; align-items: center; gap: 10px; }
   .card-top .grow { flex: 1; min-width: 0; cursor: pointer; }
-  .card h3 { font-size: 1.12rem; font-weight: 700; overflow-wrap: anywhere; }
+  .card h3 { font-size: 1.08rem; font-weight: 700; overflow-wrap: anywhere; }
   .badge {
-    display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 2px 8px;
-    border-radius: 99px; background: var(--accent-soft); color: var(--accent-deep);
-    margin-right: 6px; vertical-align: 2px;
+    display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 5px; background: var(--accent); color: #fff;
+    margin-right: 7px; vertical-align: 3px; letter-spacing: 0;
   }
-  .addr { font-size: 0.9rem; line-height: 1.45; word-break: keep-all; color: var(--text-dim); margin-top: 4px; overflow-wrap: anywhere; }
+  .addr { font-size: 0.86rem; line-height: 1.45; word-break: keep-all; color: var(--text-dim); margin-top: 3px; overflow-wrap: anywhere; }
   .map-btn {
-    flex: none; padding: 12px 13px; border-radius: 14px; font-size: 0.9rem; font-weight: 700;
-    background: var(--accent-soft); color: var(--accent-deep); white-space: nowrap;
+    flex: none; display: inline-flex; align-items: center; gap: 5px;
+    padding: 11px 12px; border-radius: 8px; font-size: 0.86rem; font-weight: 600;
+    background: var(--surface); color: var(--accent); border: 1px solid var(--border-2); white-space: nowrap;
   }
+  .map-btn svg, .actions svg { width: 17px; height: 17px; }
   .card-bottom {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border);
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
   }
   .rent { font-size: 0.88rem; min-width: 0; }
-  .rent b { font-size: 0.98rem; }
-  .rent small { color: var(--text-dim); font-size: 0.78rem; }
+  .rent b { font-size: 1rem; font-weight: 700; }
+  .rent small { color: var(--faint); font-size: 0.8rem; }
 
   .chip {
-    flex: none; padding: 9px 13px; border-radius: 99px; font-size: 0.86rem; font-weight: 700;
-    white-space: nowrap;
+    flex: none; padding: 8px 12px; border-radius: 7px; font-size: 0.84rem; font-weight: 700;
+    white-space: nowrap; letter-spacing: 0;
   }
   .chip.paid { background: var(--ok-soft); color: var(--ok); }
   .chip.late { background: var(--late-soft); color: var(--late); }
   .chip.due { background: var(--due-soft); color: var(--due); }
-  .chip.future, .chip.na { background: var(--surface-2); color: var(--text-dim); }
+  .chip.future, .chip.na { background: var(--surface-2); color: var(--faint); border: 1px solid var(--border); }
 
   .empty {
-    text-align: center; color: var(--text-dim); font-size: 0.9rem; line-height: 1.6;
-    background: var(--surface); border: 1px dashed var(--border); border-radius: 18px; padding: 34px 18px;
+    text-align: center; color: var(--text-dim); font-size: 0.9rem; line-height: 1.65;
+    background: var(--surface); border: 1px dashed var(--border-2); border-radius: var(--r); padding: 32px 18px;
   }
-  .empty .big { font-size: 2rem; display: block; margin-bottom: 8px; }
 
   /* 추가 버튼 */
   .fab {
     position: fixed; left: 50%; transform: translateX(-50%);
-    bottom: calc(20px + env(safe-area-inset-bottom));
+    bottom: calc(18px + env(safe-area-inset-bottom));
     width: min(398px, calc(100% - 32px)); padding: 15px;
     font-size: 1rem; font-weight: 700; color: #fff; background: var(--accent);
-    border-radius: 16px; box-shadow: 0 8px 22px rgba(47, 134, 207, 0.35); z-index: 5;
+    border-radius: var(--r); box-shadow: 0 6px 18px rgba(26, 43, 109, 0.28); z-index: 5;
   }
   .fab:active { background: var(--accent-deep); }
 
   /* 상세 화면 */
-  .back { font-size: 0.9rem; font-weight: 600; color: var(--accent-deep); padding: 8px 4px; margin-bottom: 8px; }
-  .detail-head { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 16px; box-shadow: var(--shadow); }
-  .detail-head h2 { font-size: 1.25rem; overflow-wrap: anywhere; }
+  .back { font-size: 0.9rem; font-weight: 600; color: var(--accent); padding: 8px 2px; margin-bottom: 8px; }
+  .detail-head {
+    background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--accent);
+    border-radius: var(--r); padding: 16px; box-shadow: var(--shadow);
+  }
+  .detail-head h2 { font-size: 1.22rem; font-weight: 700; overflow-wrap: anywhere; }
   .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .actions button {
-    flex: 1; padding: 12px 6px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;
-    background: var(--accent-soft); color: var(--accent-deep);
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 12px 6px; border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+    background: var(--surface); color: var(--text); border: 1px solid var(--border-2);
   }
-  .actions .primary { background: #03c75a; color: #fff; flex: 1 1 100%; padding: 15px; font-size: 1rem; }
-  .info { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 6px; }
+  .actions .primary { background: var(--accent); color: #fff; border-color: var(--accent); flex: 1 1 100%; padding: 14px; font-size: 0.98rem; font-weight: 700; }
+  .info { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 6px; }
   .info div { display: flex; gap: 12px; padding: 7px 0; font-size: 0.88rem; }
-  .info dt { flex: none; width: 4.6rem; color: var(--text-dim); }
-  .info dd { flex: 1; min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .info dt { flex: none; width: 4.6rem; color: var(--faint); }
+  .info dd { flex: 1; min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; font-weight: 500; }
 
-  .ledger { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; box-shadow: var(--shadow); }
-  .year-nav { display: flex; align-items: center; gap: 10px; font-weight: 400; }
-  .year-nav button { width: 30px; height: 30px; border-radius: 50%; background: var(--surface); color: var(--accent-deep); box-shadow: var(--shadow); }
-  .year-nav b { font-size: 0.9rem; color: var(--text); }
+  .ledger { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 2px 14px; box-shadow: var(--shadow); }
+  .year-nav { display: flex; align-items: center; gap: 10px; }
+  .year-nav button { width: 34px; height: 34px; border-radius: 7px; background: var(--surface); color: var(--accent); border: 1px solid var(--border-2); font-size: 1rem; }
+  .year-nav b { font-size: 0.92rem; color: var(--text); font-weight: 700; }
   .row {
     display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
-    padding: 11px 0; border-bottom: 1px solid var(--surface-2);
+    padding: 11px 0; border-bottom: 1px solid var(--border);
   }
   .row:last-child { border-bottom: none; }
   .row .m { flex: none; width: 2.6rem; font-weight: 700; font-size: 0.92rem; }
-  .row .d { flex: 1; min-width: 0; font-size: 0.8rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .d { flex: 1; min-width: 0; font-size: 0.8rem; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .row .d b { color: var(--text); font-size: 0.88rem; font-weight: 600; }
-  .row.now .m { color: var(--accent-deep); }
-  .year-total { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-dim); margin: 12px 6px 0; }
+  .row.now .m { color: var(--accent); }
+  .year-total { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--faint); margin: 12px 4px 0; }
   .year-total b { color: var(--text); }
   .detail-foot { display: flex; gap: 8px; margin-top: 18px; }
-  .detail-foot button { flex: 1; padding: 13px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; background: var(--surface); border: 1px solid var(--border); }
+  .detail-foot button { flex: 1; padding: 13px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; background: var(--surface); border: 1px solid var(--border-2); }
   .detail-foot .danger { color: var(--late); }
 
   /* 시트 (입력창) */
   .overlay {
-    position: fixed; inset: 0; background: rgba(30, 60, 90, 0.38); z-index: 20;
+    position: fixed; inset: 0; background: rgba(15, 17, 21, 0.45); z-index: 20;
     display: flex; align-items: flex-end; justify-content: center;
   }
   .sheet {
     width: 100%; max-width: 430px; max-height: 92vh; overflow-y: auto;
-    background: var(--bg); border-radius: 22px 22px 0 0;
+    background: var(--bg); border-radius: 14px 14px 0 0;
     padding: 18px 16px calc(20px + env(safe-area-inset-bottom));
   }
   .sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .sheet-head h2 { font-size: 1.1rem; }
-  .sheet-head button { width: 34px; height: 34px; border-radius: 50%; background: var(--surface); font-size: 1rem; }
+  .sheet-head h2 { font-size: 1.12rem; font-weight: 700; }
+  .sheet-head button { width: 36px; height: 36px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border-2); font-size: 0.9rem; color: var(--text-dim); }
 
   .field { margin-bottom: 12px; }
-  .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin: 0 4px 6px; }
+  .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin: 0 2px 6px; }
   .field label em { color: var(--late); font-style: normal; }
   .field input, .field select, .field textarea {
     width: 100%; min-width: 0; padding: 12px 13px; font-size: 1rem;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; outline: none;
+    background: var(--surface); border: 1px solid var(--border-2); border-radius: 8px; outline: none;
     -webkit-appearance: none; appearance: none; min-height: 46px;
   }
   .field textarea { min-height: 84px; resize: vertical; line-height: 1.5; }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
-  .field input::placeholder, .field textarea::placeholder { color: #9db0c0; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26, 43, 109, 0.12); }
+  .field input::placeholder, .field textarea::placeholder { color: #a3aab5; }
   .with-btn { display: flex; gap: 8px; }
   .with-btn input { flex: 1; }
-  .with-btn button { flex: none; padding: 0 13px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; background: var(--accent-soft); color: var(--accent-deep); }
+  .with-btn button { flex: none; padding: 0 14px; border-radius: 8px; font-size: 0.86rem; font-weight: 600; background: var(--surface); color: var(--accent); border: 1px solid var(--border-2); }
   .two { display: flex; gap: 10px; }
   .two .field { flex: 1; min-width: 0; }
-  .group-title { font-size: 0.85rem; font-weight: 700; margin: 18px 4px 10px; }
-  .hint { font-size: 0.78rem; color: var(--text-dim); margin: -4px 4px 12px; line-height: 1.5; }
+  .group-title { font-size: 0.88rem; font-weight: 700; margin: 20px 2px 10px; padding-left: 9px; border-left: 4px solid var(--accent); line-height: 1.2; }
+  .hint { font-size: 0.8rem; color: var(--faint); margin: -4px 2px 12px; line-height: 1.55; word-break: keep-all; }
 
-  .btn { width: 100%; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: 700; color: #fff; background: var(--accent); margin-top: 6px; }
+  .btn { width: 100%; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: 700; color: #fff; background: var(--accent); margin-top: 6px; border: 1px solid var(--accent); }
   .btn:active { background: var(--accent-deep); }
-  .btn.ghost { background: var(--surface); color: var(--accent-deep); border: 1px solid var(--border); }
-  .btn.warn { background: var(--surface); color: var(--late); border: 1px solid var(--border); }
+  .btn.ghost { background: var(--surface); color: var(--text); border-color: var(--border-2); font-weight: 600; }
+  .btn.warn { background: var(--surface); color: var(--late); border-color: var(--border-2); font-weight: 600; }
+
+  /* 사용법 */
+  .help { background: var(--surface); border: 1px solid var(--border); border-left: 6px solid var(--accent); border-radius: var(--r); padding: 14px 15px; margin-bottom: 10px; box-shadow: var(--shadow); }
+  .help h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .help ol, .help ul { padding-left: 1.25rem; }
+  .help li { font-size: 0.9rem; line-height: 1.6; margin-bottom: 4px; word-break: keep-all; }
+  .help p { font-size: 0.9rem; line-height: 1.6; word-break: keep-all; color: var(--text-dim); }
+  .help .chip { display: inline-block; padding: 2px 9px; font-size: 0.78rem; }
+  .help .warn { color: var(--late); font-weight: 600; }
 
   .toast {
     position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%);
-    background: rgba(36, 56, 74, 0.92); color: #fff; font-size: 0.85rem;
-    padding: 10px 16px; border-radius: 99px; z-index: 40; white-space: nowrap;
+    background: rgba(15, 17, 21, 0.92); color: #fff; font-size: 0.85rem;
+    padding: 10px 16px; border-radius: 8px; z-index: 40; white-space: nowrap;
   }
 </style>
 </head>
@@ -242,13 +255,13 @@
   <!-- 목록 화면 -->
   <div id="view-home">
     <div class="header">
-      <div class="logo">🏡</div>
+      <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/></svg></div>
       <div class="grow">
         <h1>내 부동산 관리</h1>
         <p class="tagline">위치 · 월세 입금 확인</p>
       </div>
       <button class="help-btn" data-act="help">사용법</button>
-      <button class="icon-btn" data-act="settings" aria-label="설정">⚙️</button>
+      <button class="help-btn" data-act="settings">설정</button>
     </div>
 
     <div class="summary">
@@ -263,13 +276,13 @@
     <div class="section-title">부동산 목록 <span id="count-label"></span></div>
     <div id="list"></div>
 
-    <button class="fab" data-act="add">＋ 부동산 추가</button>
+    <button class="fab" data-act="add">+ 부동산 추가</button>
   </div>
 
   <!-- 링크 없이 열었을 때 -->
   <div id="view-nokey" hidden>
-    <div class="header"><div class="logo">🏡</div><div class="grow"><h1>내 부동산 관리</h1></div></div>
-    <div class="empty"><span class="big">🔗</span>받으신 <b>링크</b>를 눌러서 열어 주세요.<br>링크가 있어야 목록이 보입니다.</div>
+    <div class="header"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/></svg></div><div class="grow"><h1>내 부동산 관리</h1></div></div>
+    <div class="empty">받으신 <b>링크</b>를 눌러서 열어 주세요.<br>링크가 있어야 목록이 보입니다.</div>
     <button class="btn ghost" data-act="newlist" style="margin-top:14px">새 목록 만들기</button>
   </div>
 
@@ -292,7 +305,7 @@
     <div class="field"><label>주소 <em>*</em></label>
       <div class="with-btn">
         <input name="address" placeholder="예) 서울특별시 중구 세종대로 110" required>
-        <button type="button" data-act="map-form">📍 위치</button>
+        <button type="button" data-act="map-form">위치 확인</button>
       </div>
     </div>
 
@@ -329,7 +342,7 @@
       <div class="field"><label>입금액 (원)</label><input name="amount" inputmode="numeric" data-money required></div>
     </div>
     <div class="field"><label>메모</label><input name="memo" placeholder="예) 2만원 덜 들어옴"></div>
-    <button class="btn" type="submit">✓ 입금 확인</button>
+    <button class="btn" type="submit">입금 확인</button>
     <button class="btn warn" type="button" data-act="unpay" id="unpay-btn">입금 기록 지우기</button>
   </form>
 </div>
@@ -340,15 +353,15 @@
     <div class="sheet-head"><h2>사용법</h2><button type="button" data-act="close">✕</button></div>
 
     <div class="help">
-      <h3>📍 위치 보기</h3>
+      <h3>1. 위치 보기</h3>
       <ol>
-        <li>목록에서 보고 싶은 부동산 오른쪽의 <b>📍 위치</b> 버튼을 누릅니다.</li>
+        <li>목록에서 보고 싶은 부동산 오른쪽의 <b>위치</b> 버튼을 누릅니다.</li>
         <li>네이버지도가 열리면서 그 주소의 위치가 표시됩니다.</li>
       </ol>
     </div>
 
     <div class="help">
-      <h3>✏️ 월세 정보 넣기</h3>
+      <h3>2. 월세 정보 넣기</h3>
       <ol>
         <li>목록에서 부동산 <b>이름</b>을 누릅니다.</li>
         <li>맨 아래 <b>정보 수정</b>을 누릅니다.</li>
@@ -359,53 +372,53 @@
     </div>
 
     <div class="help">
-      <h3>✓ 월세 입금 확인하기</h3>
+      <h3>3. 월세 입금 확인하기</h3>
       <ol>
         <li>월세가 들어오면, 목록에서 그 부동산의 <span class="chip late">미입금</span> 또는 <span class="chip due">입금 예정</span> 표시를 누릅니다.</li>
-        <li>입금일과 금액을 확인하고 <b>✓ 입금 확인</b>을 누릅니다.</li>
-        <li>표시가 <span class="chip paid">✓ 입금</span>으로 바뀝니다.</li>
+        <li>입금일과 금액을 확인하고 <b>입금 확인</b>을 누릅니다.</li>
+        <li>표시가 <span class="chip paid">입금</span>으로 바뀝니다.</li>
       </ol>
       <p>잘못 눌렀으면 그 표시를 다시 누르고 <b>입금 기록 지우기</b>를 누르세요.</p>
     </div>
 
     <div class="help">
-      <h3>🎨 색 표시의 뜻</h3>
+      <h3>4. 색 표시의 뜻</h3>
       <ul>
-        <li><span class="chip paid">✓ 입금</span> 월세가 들어왔습니다.</li>
+        <li><span class="chip paid">입금</span> 월세가 들어왔습니다.</li>
         <li><span class="chip due">입금 예정</span> 아직 입금일이 지나지 않았습니다.</li>
         <li><span class="chip late">미입금</span> 입금일이 지났는데 확인이 안 됐습니다.</li>
       </ul>
     </div>
 
     <div class="help">
-      <h3>📅 지난 달 · 일 년 이력 보기</h3>
+      <h3>5. 지난 달 · 일 년 이력 보기</h3>
       <ul>
-        <li>맨 위 파란 상자의 <b>‹ ›</b> 를 누르면 다른 달을 볼 수 있습니다.</li>
+        <li>맨 위 날짜 양옆의 <b>‹ ›</b> 를 누르면 다른 달을 볼 수 있습니다.</li>
         <li>부동산 이름을 누르면 1월부터 12월까지 입금 이력과 한 해 합계가 보입니다.</li>
       </ul>
     </div>
 
     <div class="help">
-      <h3>➕ 추가 · 삭제</h3>
+      <h3>6. 추가 · 삭제</h3>
       <ul>
-        <li><b>추가</b>: 맨 아래 <b>＋ 부동산 추가</b>를 누르고 이름과 주소를 적은 뒤 저장합니다.</li>
+        <li><b>추가</b>: 맨 아래 <b>+ 부동산 추가</b>를 누르고 이름과 주소를 적은 뒤 저장합니다.</li>
         <li><b>삭제</b>: 부동산 이름을 누른 뒤 맨 아래 <b>삭제</b>를 누릅니다.</li>
       </ul>
       <p class="warn">삭제하면 입금 이력까지 지워지고 되돌릴 수 없습니다.</p>
     </div>
 
     <div class="help">
-      <h3>👨‍👩‍👧 다른 사람과 함께 보기</h3>
+      <h3>7. 다른 사람과 함께 보기</h3>
       <ol>
-        <li>오른쪽 위 <b>⚙️</b> 를 누릅니다.</li>
-        <li><b>📤 이 목록 링크 보내기</b>를 눌러 카카오톡 등으로 보냅니다.</li>
+        <li>오른쪽 위 <b>설정</b>을 누릅니다.</li>
+        <li><b>이 목록 링크 보내기</b>를 눌러 카카오톡 등으로 보냅니다.</li>
         <li>받은 사람이 링크를 누르면 같은 목록이 보입니다.</li>
       </ol>
       <p class="warn">링크를 받은 사람은 내용을 고치거나 지울 수도 있으니, 믿을 수 있는 분에게만 보내세요.</p>
     </div>
 
     <div class="help">
-      <h3>📱 휴대폰 바탕화면에 넣기</h3>
+      <h3>8. 휴대폰 바탕화면에 넣기</h3>
       <ul>
         <li><b>아이폰</b>: 사파리 아래쪽 공유 버튼(네모에 화살표) → <b>홈 화면에 추가</b></li>
         <li><b>갤럭시</b>: 오른쪽 위 점 세 개(⋮) → <b>홈 화면에 추가</b></li>
@@ -421,11 +434,11 @@
 <div class="overlay" id="sheet-settings" hidden>
   <div class="sheet">
     <div class="sheet-head"><h2>설정</h2><button type="button" data-act="close">✕</button></div>
-    <button class="btn" data-act="share">📤 이 목록 링크 보내기</button>
+    <button class="btn" data-act="share">이 목록 링크 보내기</button>
     <p class="hint" style="margin-top:10px">이 링크를 받은 사람은 같은 목록을 함께 보고 고칠 수 있습니다. 믿을 수 있는 분에게만 보내 주세요.</p>
     <div class="group-title">백업</div>
-    <button class="btn ghost" data-act="export">⬇︎ 백업 파일 저장</button>
-    <button class="btn ghost" data-act="import">⬆︎ 백업 파일 불러오기</button>
+    <button class="btn ghost" data-act="export">백업 파일 저장</button>
+    <button class="btn ghost" data-act="import">백업 파일 불러오기</button>
     <input type="file" id="import-file" accept=".json,application/json" hidden>
 
     <div class="group-title">주소 여러 개 한꺼번에 추가</div>
@@ -528,7 +541,8 @@
     if (key > cur) return 'future';
     return d.getDate() > (p.payDay || 31) ? 'late' : 'due';
   }
-  const STATUS_LABEL = { paid: '✓ 입금 완료', late: '미입금', due: '입금 예정', future: '예정', na: '기록하기' };
+  const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.9-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.1-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
+  const STATUS_LABEL = { paid: '입금 완료', late: '미입금', due: '입금 예정', future: '예정', na: '기록하기' };
 
   // ───── 목록 화면 ─────
   let viewY = now.getFullYear(), viewM = now.getMonth() + 1;
@@ -549,16 +563,16 @@
         ? `<b>월 ${won(p.rent)}</b>${p.payDay ? ` <small>· 매월 ${p.payDay}일</small>` : ''}`
         : `<small>월세 없음</small>`;
       const chip = (p.rent || rec?.paid)
-        ? `<button class="chip ${st}" data-act="pay" data-id="${p.id}" data-key="${key}">${st === 'paid' ? `✓ ${shortDate(rec.date)} 입금` : STATUS_LABEL[st]}</button>`
+        ? `<button class="chip ${st}" data-act="pay" data-id="${p.id}" data-key="${key}">${st === 'paid' ? `${shortDate(rec.date)} 입금` : STATUS_LABEL[st]}</button>`
         : '';
       return `
-        <div class="card">
+        <div class="card ${p.rent || rec?.paid ? 'st-' + st : ''}">
           <div class="card-top">
             <div class="grow" data-act="detail" data-id="${p.id}">
               <h3>${esc(p.name)}</h3>
               <p class="addr">${esc(p.address)}</p>
             </div>
-            <button class="map-btn" data-act="map" data-id="${p.id}">📍 위치</button>
+            <button class="map-btn" data-act="map" data-id="${p.id}">${ICON_PIN}위치</button>
           </div>
           ${chip ? `<div class="card-bottom">
             <div class="rent" data-act="detail" data-id="${p.id}">${rentLine}</div>
@@ -579,7 +593,7 @@
 
     $('#count-label').textContent = data.properties.length ? `총 ${data.properties.length}곳` : '';
     $('#list').innerHTML = cards.join('') || (!loaded ? `<div class="empty">불러오는 중…</div>` : `
-      <div class="empty"><span class="big">🏡</span>아직 등록된 부동산이 없어요.<br>아래 <b>＋ 부동산 추가</b> 버튼으로 시작해 보세요.</div>`);
+      <div class="empty">아직 등록된 부동산이 없어요.<br>아래 <b>+ 부동산 추가</b> 버튼으로 시작해 보세요.</div>`);
   }
 
   // ───── 상세 화면 ─────
@@ -623,9 +637,9 @@
         <h2><span class="badge">${esc(p.type)}</span>${esc(p.name)}</h2>
         <p class="addr">${esc(p.address)}</p>
         <div class="actions">
-          <button class="primary" data-act="map" data-id="${p.id}">📍 네이버지도에서 위치 보기</button>
+          <button class="primary" data-act="map" data-id="${p.id}">${ICON_PIN}네이버지도에서 위치 보기</button>
           <button data-act="copy" data-id="${p.id}">주소 복사</button>
-          ${p.phone ? `<button data-act="call" data-id="${p.id}">📞 전화</button>` : ''}
+          ${p.phone ? `<button data-act="call" data-id="${p.id}">전화 걸기</button>` : ''}
         </div>
         ${info ? `<dl class="info">${info}</dl>` : ''}
       </div>
@@ -640,7 +654,7 @@
       <div class="year-total"><span>${detailYear}년 입금 합계 <b>${won(total)}</b></span>${lateSum ? `<span>미입금 <b style="color:var(--late)">${won(lateSum)}</b></span>` : ''}</div>
 
       <div class="detail-foot">
-        <button data-act="edit" data-id="${p.id}">✏️ 정보 수정</button>
+        <button data-act="edit" data-id="${p.id}">정보 수정</button>
         <button class="danger" data-act="delete" data-id="${p.id}">삭제</button>
       </div>`;
   }
