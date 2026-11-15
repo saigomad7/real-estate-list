@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#eaf4fc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="내 부동산">
+<title>내 부동산 관리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+<style>
+  :root {
+    --bg: #eaf4fc;
+    --surface: #ffffff;
+    --surface-2: #f4f9fe;
+    --text: #16293a;
+    --text-dim: #4f6679;
+    --accent: #3d9be0;
+    --accent-deep: #2580c7;
+    --accent-soft: #dcedfb;
+    --ok: #23976c;
+    --ok-soft: #dff5ec;
+    --late: #d9603f;
+    --late-soft: #fde8e1;
+    --due: #b98314;
+    --due-soft: #fdf3d7;
+    --border: #d5e6f4;
+    --shadow: 0 2px 14px rgba(60, 120, 170, 0.10);
+  }
+
+  html { font-size: 19px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: none; background: none; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 430px;
+    padding: 24px 16px calc(110px + env(safe-area-inset-bottom));
+  }
+
+  [hidden] { display: none !important; }
+
+  /* 헤더 */
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .logo {
+    width: 46px; height: 46px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; background: var(--surface); border-radius: 50%;
+    box-shadow: var(--shadow);
+  }
+  .header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.01em; }
+  .tagline { font-size: 0.8rem; color: var(--text-dim); margin-top: 2px; }
+  .header .grow { flex: 1; min-width: 0; }
+  .icon-btn {
+    width: 40px; height: 40px; flex: none; border-radius: 50%;
+    background: var(--surface); box-shadow: var(--shadow); font-size: 1.05rem;
+  }
+
+  /* 월 선택 + 요약 */
+  .summary {
+    background: linear-gradient(145deg, #4aa8ea, #2f86cf);
+    color: #fff; border-radius: 20px; padding: 16px 16px 18px;
+    box-shadow: 0 6px 20px rgba(47, 134, 207, 0.28);
+  }
+  .month-nav { display: flex; align-items: center; justify-content: space-between; }
+  .month-nav button {
+    width: 36px; height: 36px; border-radius: 50%; color: #fff;
+    background: rgba(255,255,255,0.2); font-size: 1.1rem;
+  }
+  .month-nav strong { font-size: 1.05rem; font-weight: 700; }
+  .sum-main { margin-top: 14px; }
+  .sum-main small { display: block; font-size: 0.85rem; opacity: 0.9; }
+  .sum-main b { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
+  .bar { height: 7px; border-radius: 99px; background: rgba(255,255,255,0.28); margin-top: 12px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: #fff; border-radius: 99px; }
+  .sum-row { display: flex; gap: 8px; margin-top: 12px; }
+  .sum-row div { flex: 1; min-width: 0; background: rgba(255,255,255,0.16); border-radius: 12px; padding: 9px 10px; }
+  .sum-row small { display: block; font-size: 0.78rem; opacity: 0.9; }
+  .sum-row b { font-size: 0.98rem; }
+
+  .section-title {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 22px 4px 10px; font-size: 0.92rem; font-weight: 700;
+  }
+  .section-title span { font-size: 0.78rem; font-weight: 400; color: var(--text-dim); }
+
+  /* 부동산 카드 */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 18px; padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow);
+  }
+  .card-top { display: flex; align-items: flex-start; gap: 10px; }
+  .card-top .grow { flex: 1; min-width: 0; cursor: pointer; }
+  .card h3 { font-size: 1.12rem; font-weight: 700; overflow-wrap: anywhere; }
+  .badge {
+    display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 2px 8px;
+    border-radius: 99px; background: var(--accent-soft); color: var(--accent-deep);
+    margin-right: 6px; vertical-align: 2px;
+  }
+  .addr { font-size: 0.9rem; line-height: 1.45; word-break: keep-all; color: var(--text-dim); margin-top: 4px; overflow-wrap: anywhere; }
+  .map-btn {
+    flex: none; padding: 12px 13px; border-radius: 14px; font-size: 0.9rem; font-weight: 700;
+    background: var(--accent-soft); color: var(--accent-deep); white-space: nowrap;
+  }
+  .card-bottom {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border);
+  }
+  .rent { font-size: 0.88rem; min-width: 0; }
+  .rent b { font-size: 0.98rem; }
+  .rent small { color: var(--text-dim); font-size: 0.78rem; }
+
+  .chip {
+    flex: none; padding: 9px 13px; border-radius: 99px; font-size: 0.86rem; font-weight: 700;
+    white-space: nowrap;
+  }
+  .chip.paid { background: var(--ok-soft); color: var(--ok); }
+  .chip.late { background: var(--late-soft); color: var(--late); }
+  .chip.due { background: var(--due-soft); color: var(--due); }
+  .chip.future, .chip.na { background: var(--surface-2); color: var(--text-dim); }
+
+  .empty {
+    text-align: center; color: var(--text-dim); font-size: 0.9rem; line-height: 1.6;
+    background: var(--surface); border: 1px dashed var(--border); border-radius: 18px; padding: 34px 18px;
+  }
+  .empty .big { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+  /* 추가 버튼 */
+  .fab {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    width: min(398px, calc(100% - 32px)); padding: 15px;
+    font-size: 1rem; font-weight: 700; color: #fff; background: var(--accent);
+    border-radius: 16px; box-shadow: 0 8px 22px rgba(47, 134, 207, 0.35); z-index: 5;
+  }
+  .fab:active { background: var(--accent-deep); }
+
+  /* 상세 화면 */
+  .back { font-size: 0.9rem; font-weight: 600; color: var(--accent-deep); padding: 8px 4px; margin-bottom: 8px; }
+  .detail-head { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 16px; box-shadow: var(--shadow); }
+  .detail-head h2 { font-size: 1.25rem; overflow-wrap: anywhere; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .actions button {
+    flex: 1; padding: 12px 6px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;
+    background: var(--accent-soft); color: var(--accent-deep);
+  }
+  .actions .primary { background: #03c75a; color: #fff; flex: 1 1 100%; padding: 15px; font-size: 1rem; }
+  .info { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 6px; }
+  .info div { display: flex; gap: 12px; padding: 7px 0; font-size: 0.88rem; }
+  .info dt { flex: none; width: 4.6rem; color: var(--text-dim); }
+  .info dd { flex: 1; min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+
+  .ledger { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; box-shadow: var(--shadow); }
+  .year-nav { display: flex; align-items: center; gap: 10px; font-weight: 400; }
+  .year-nav button { width: 30px; height: 30px; border-radius: 50%; background: var(--surface); color: var(--accent-deep); box-shadow: var(--shadow); }
+  .year-nav b { font-size: 0.9rem; color: var(--text); }
+  .row {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+    padding: 11px 0; border-bottom: 1px solid var(--surface-2);
+  }
+  .row:last-child { border-bottom: none; }
+  .row .m { flex: none; width: 2.6rem; font-weight: 700; font-size: 0.92rem; }
+  .row .d { flex: 1; min-width: 0; font-size: 0.8rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .d b { color: var(--text); font-size: 0.88rem; font-weight: 600; }
+  .row.now .m { color: var(--accent-deep); }
+  .year-total { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-dim); margin: 12px 6px 0; }
+  .year-total b { color: var(--text); }
+  .detail-foot { display: flex; gap: 8px; margin-top: 18px; }
+  .detail-foot button { flex: 1; padding: 13px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; background: var(--surface); border: 1px solid var(--border); }
+  .detail-foot .danger { color: var(--late); }
+
+  /* 시트 (입력창) */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(30, 60, 90, 0.38); z-index: 20;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .sheet {
+    width: 100%; max-width: 430px; max-height: 92vh; overflow-y: auto;
+    background: var(--bg); border-radius: 22px 22px 0 0;
+    padding: 18px 16px calc(20px + env(safe-area-inset-bottom));
+  }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .sheet-head h2 { font-size: 1.1rem; }
+  .sheet-head button { width: 34px; height: 34px; border-radius: 50%; background: var(--surface); font-size: 1rem; }
+
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin: 0 4px 6px; }
+  .field label em { color: var(--late); font-style: normal; }
+  .field input, .field select, .field textarea {
+    width: 100%; min-width: 0; padding: 12px 13px; font-size: 1rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; outline: none;
+    -webkit-appearance: none; appearance: none; min-height: 46px;
+  }
+  .field textarea { min-height: 84px; resize: vertical; line-height: 1.5; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+  .field input::placeholder, .field textarea::placeholder { color: #9db0c0; }
+  .with-btn { display: flex; gap: 8px; }
+  .with-btn input { flex: 1; }
+  .with-btn button { flex: none; padding: 0 13px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; background: var(--accent-soft); color: var(--accent-deep); }
+  .two { display: flex; gap: 10px; }
+  .two .field { flex: 1; min-width: 0; }
+  .group-title { font-size: 0.85rem; font-weight: 700; margin: 18px 4px 10px; }
+  .hint { font-size: 0.78rem; color: var(--text-dim); margin: -4px 4px 12px; line-height: 1.5; }
+
+  .btn { width: 100%; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: 700; color: #fff; background: var(--accent); margin-top: 6px; }
+  .btn:active { background: var(--accent-deep); }
+  .btn.ghost { background: var(--surface); color: var(--accent-deep); border: 1px solid var(--border); }
+  .btn.warn { background: var(--surface); color: var(--late); border: 1px solid var(--border); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%);
+    background: rgba(36, 56, 74, 0.92); color: #fff; font-size: 0.85rem;
+    padding: 10px 16px; border-radius: 99px; z-index: 40; white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 목록 화면 -->
+  <div id="view-home">
+    <div class="header">
+      <div class="logo">🏡</div>
+      <div class="grow">
+        <h1>내 부동산 관리</h1>
+        <p class="tagline">위치 · 월세 입금 확인</p>
+      </div>
+      <button class="icon-btn" data-act="settings" aria-label="설정">⚙️</button>
+    </div>
+
+    <div class="summary">
+      <div class="month-nav">
+        <button data-act="month" data-d="-1" aria-label="이전 달">‹</button>
+        <strong id="month-label"></strong>
+        <button data-act="month" data-d="1" aria-label="다음 달">›</button>
+      </div>
+      <div id="summary-body"></div>
+    </div>
+
+    <div class="section-title">부동산 목록 <span id="count-label"></span></div>
+    <div id="list"></div>
+
+    <button class="fab" data-act="add">＋ 부동산 추가</button>
+  </div>
+
+  <!-- 링크 없이 열었을 때 -->
+  <div id="view-nokey" hidden>
+    <div class="header"><div class="logo">🏡</div><div class="grow"><h1>내 부동산 관리</h1></div></div>
+    <div class="empty"><span class="big">🔗</span>받으신 <b>링크</b>를 눌러서 열어 주세요.<br>링크가 있어야 목록이 보입니다.</div>
+    <button class="btn ghost" data-act="newlist" style="margin-top:14px">새 목록 만들기</button>
+  </div>
+
+  <!-- 상세 화면 -->
+  <div id="view-detail" hidden></div>
+</div>
+
+<!-- 부동산 입력 시트 -->
+<div class="overlay" id="sheet-form" hidden>
+  <form class="sheet" id="form" autocomplete="off">
+    <div class="sheet-head"><h2 id="form-title">부동산 추가</h2><button type="button" data-act="close">✕</button></div>
+
+    <div class="field"><label>이름 <em>*</em></label><input name="name" placeholder="예) 시골 밭" required></div>
+    <div class="field"><label>종류</label>
+      <select name="type">
+        <option>토지</option><option>임야</option><option>주택</option><option>아파트</option>
+        <option>상가</option><option>오피스텔</option><option>기타</option>
+      </select>
+    </div>
+    <div class="field"><label>주소 <em>*</em></label>
+      <div class="with-btn">
+        <input name="address" placeholder="예) 서울특별시 중구 세종대로 110" required>
+        <button type="button" data-act="map-form">📍 위치</button>
+      </div>
+    </div>
+
+    <div class="group-title">월세 정보</div>
+    <p class="hint">월세가 없는 부동산은 비워 두면 됩니다.</p>
+    <div class="two">
+      <div class="field"><label>월세 (원)</label><input name="rent" inputmode="numeric" data-money placeholder="500,000"></div>
+      <div class="field"><label>입금일 (매월)</label><input name="payDay" inputmode="numeric" placeholder="예) 5" maxlength="2"></div>
+    </div>
+    <div class="field"><label>보증금 (원)</label><input name="deposit" inputmode="numeric" data-money placeholder="10,000,000"></div>
+    <div class="two">
+      <div class="field"><label>임차인</label><input name="tenant" placeholder="이름"></div>
+      <div class="field"><label>연락처</label><input name="phone" type="tel" placeholder="010-0000-0000"></div>
+    </div>
+    <div class="two">
+      <div class="field"><label>계약 시작</label><input name="contractStart" type="date"></div>
+      <div class="field"><label>계약 종료</label><input name="contractEnd" type="date"></div>
+    </div>
+
+    <div class="group-title">부가 정보</div>
+    <div class="field"><textarea name="memo" placeholder="면적, 지목, 특이사항 등 자유롭게 적어 두세요"></textarea></div>
+
+    <button class="btn" type="submit">저장</button>
+  </form>
+</div>
+
+<!-- 입금 기록 시트 -->
+<div class="overlay" id="sheet-pay" hidden>
+  <form class="sheet" id="pay-form" autocomplete="off">
+    <div class="sheet-head"><h2 id="pay-title"></h2><button type="button" data-act="close">✕</button></div>
+    <p class="hint" id="pay-sub" style="margin-top:-8px"></p>
+    <div class="two">
+      <div class="field"><label>입금일</label><input name="date" type="date" required></div>
+      <div class="field"><label>입금액 (원)</label><input name="amount" inputmode="numeric" data-money required></div>
+    </div>
+    <div class="field"><label>메모</label><input name="memo" placeholder="예) 2만원 덜 들어옴"></div>
+    <button class="btn" type="submit">✓ 입금 확인</button>
+    <button class="btn warn" type="button" data-act="unpay" id="unpay-btn">입금 기록 지우기</button>
+  </form>
+</div>
+
+<!-- 설정 시트 -->
+<div class="overlay" id="sheet-settings" hidden>
+  <div class="sheet">
+    <div class="sheet-head"><h2>설정</h2><button type="button" data-act="close">✕</button></div>
+    <button class="btn" data-act="share">📤 이 목록 링크 보내기</button>
+    <p class="hint" style="margin-top:10px">이 링크를 받은 사람은 같은 목록을 함께 보고 고칠 수 있습니다. 믿을 수 있는 분에게만 보내 주세요.</p>
+    <div class="group-title">백업</div>
+    <button class="btn ghost" data-act="export">⬇︎ 백업 파일 저장</button>
+    <button class="btn ghost" data-act="import">⬆︎ 백업 파일 불러오기</button>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
+
+    <div class="group-title">주소 여러 개 한꺼번에 추가</div>
+    <div class="field"><textarea id="bulk" placeholder="한 줄에 주소 하나씩 붙여 넣으세요"></textarea></div>
+    <button class="btn ghost" data-act="bulk">주소 한꺼번에 추가</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // 가족 위치 앱과 같은 Firebase 프로젝트를 함께 씀 (경로 = 비밀 열쇠 방식)
+  const db = getDatabase(initializeApp({
+    apiKey: "AIzaSyBQovL-c6q4RfuPKOnEiukw_aMzKBijqTE",
+    authDomain: "family-location-a3573.firebaseapp.com",
+    databaseURL: "https://family-location-a3573-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "family-location-a3573",
+  }));
+
+  const KEY = 'real_estate_list_v2';
+  const $ = (s) => document.querySelector(s);
+
+  // ───── 목록 열쇠: 링크(?k=...)에 들어 있고, 이 열쇠를 아는 사람만 볼 수 있음 ─────
+  const KEY_RE = /^[A-Za-z0-9_-]{16,64}$/;
+  let LIST_KEY = new URLSearchParams(location.search).get('k') || '';
+  if (!KEY_RE.test(LIST_KEY)) { try { LIST_KEY = localStorage.getItem(KEY + ':key') || ''; } catch {} }
+  if (!KEY_RE.test(LIST_KEY)) LIST_KEY = '';
+  if (LIST_KEY) {
+    try { localStorage.setItem(KEY + ':key', LIST_KEY); } catch {}
+    // 주소창에 열쇠를 유지 → '홈 화면에 추가' 해도 그대로 열림
+    history.replaceState(null, '', location.pathname + '?k=' + LIST_KEY);
+  }
+  const shareUrl = () => location.origin + location.pathname + '?k=' + LIST_KEY;
+  const propsRef = () => ref(db, `families/${LIST_KEY}/estate/props`);
+  const propRef = (id) => ref(db, `families/${LIST_KEY}/estate/props/${id}`);
+
+  // ───── 데이터 ─────
+  let data = { properties: [] };
+  let loaded = false;
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY + ':cache:' + LIST_KEY));
+    if (saved && Array.isArray(saved.properties)) { data = saved; loaded = true; }
+  } catch {}
+
+  const fail = () => toast('저장하지 못했어요. 인터넷 연결을 확인해 주세요');
+  function saveProp(p) { set(propRef(p.id), p).catch(fail); }
+  function removeProp(id) { remove(propRef(id)).catch(fail); }
+
+  function startSync() {
+    onValue(propsRef(), (snap) => {
+      const v = snap.val() || {};
+      data.properties = Object.values(v).filter((p) => p && p.id && p.name)
+        .sort((a, b) => (a.sort || 0) - (b.sort || 0));
+      loaded = true;
+      try { localStorage.setItem(KEY + ':cache:' + LIST_KEY, JSON.stringify(data)); } catch {}
+      refresh();
+    }, () => toast('자료를 불러오지 못했어요'));
+  }
+
+  // ───── 도우미 ─────
+  const pad = (n) => String(n).padStart(2, '0');
+  const now = new Date();
+  const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+  const ymKey = (y, m) => `${y}-${pad(m)}`;
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const won = (n) => Number(n || 0).toLocaleString('ko-KR') + '원';
+  const num = (s) => Number(String(s ?? '').replace(/[^\d]/g, '')) || 0;
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const find = (id) => data.properties.find((p) => p.id === id);
+  const shortDate = (s) => s ? `${Number(s.slice(5, 7))}/${Number(s.slice(8, 10))}` : '';
+
+  let toastTimer;
+  function toast(msg) {
+    document.querySelector('.toast')?.remove();
+    const el = document.createElement('div');
+    el.className = 'toast'; el.textContent = msg;
+    document.body.appendChild(el);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.remove(), 2200);
+  }
+
+  function openMap(address) {
+    const a = (address || '').trim();
+    if (!a) return toast('주소를 먼저 입력해 주세요');
+    window.open('https://map.naver.com/p/search/' + encodeURIComponent(a), '_blank');
+  }
+
+  // 그 달의 월세 상태: paid 입금완료 / late 미입금 / due 입금예정 / future 예정 / na 대상 아님
+  function statusOf(p, key) {
+    const rec = p.payments?.[key];
+    if (rec?.paid) return 'paid';
+    if (!p.rent) return 'na';
+    const start = (p.contractStart || p.createdAt || '').slice(0, 7);
+    if (start && key < start) return 'na';
+    if (p.contractEnd && key > p.contractEnd.slice(0, 7)) return 'na';
+    const d = new Date();
+    const cur = ymKey(d.getFullYear(), d.getMonth() + 1);
+    if (key < cur) return 'late';
+    if (key > cur) return 'future';
+    return d.getDate() > (p.payDay || 31) ? 'late' : 'due';
+  }
+  const STATUS_LABEL = { paid: '✓ 입금 완료', late: '미입금', due: '입금 예정', future: '예정', na: '기록하기' };
+
+  // ───── 목록 화면 ─────
+  let viewY = now.getFullYear(), viewM = now.getMonth() + 1;
+
+  function renderHome() {
+    const key = ymKey(viewY, viewM);
+    $('#month-label').textContent = `${viewY}년 ${viewM}월`;
+
+    let expected = 0, received = 0, target = 0, paidCnt = 0, lateCnt = 0;
+    const cards = data.properties.map((p) => {
+      const st = statusOf(p, key);
+      const rec = p.payments?.[key];
+      if (st !== 'na') { target++; expected += p.rent || rec?.amount || 0; }
+      if (st === 'paid') { paidCnt++; received += rec.amount || 0; }
+      if (st === 'late') lateCnt++;
+
+      const rentLine = p.rent
+        ? `<b>월 ${won(p.rent)}</b>${p.payDay ? ` <small>· 매월 ${p.payDay}일</small>` : ''}`
+        : `<small>월세 없음</small>`;
+      const chip = (p.rent || rec?.paid)
+        ? `<button class="chip ${st}" data-act="pay" data-id="${p.id}" data-key="${key}">${st === 'paid' ? `✓ ${shortDate(rec.date)} 입금` : STATUS_LABEL[st]}</button>`
+        : '';
+      return `
+        <div class="card">
+          <div class="card-top">
+            <div class="grow" data-act="detail" data-id="${p.id}">
+              <h3>${esc(p.name)}</h3>
+              <p class="addr">${esc(p.address)}</p>
+            </div>
+            <button class="map-btn" data-act="map" data-id="${p.id}">📍 위치</button>
+          </div>
+          ${chip ? `<div class="card-bottom">
+            <div class="rent" data-act="detail" data-id="${p.id}">${rentLine}</div>
+            ${chip}
+          </div>` : ''}
+        </div>`;
+    });
+
+    const pct = expected ? Math.min(100, Math.round((received / expected) * 100)) : 0;
+    $('#summary-body').innerHTML = `
+      <div class="sum-main"><small>이번 달 받을 월세</small><b>${won(expected)}</b></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="sum-row">
+        <div><small>입금 완료</small><b>${paidCnt}곳 · ${won(received)}</b></div>
+        <div><small>미입금</small><b>${lateCnt}곳</b></div>
+      </div>`;
+    $('.sum-main small').textContent = `${viewM}월 받을 월세`;
+
+    $('#count-label').textContent = data.properties.length ? `총 ${data.properties.length}곳` : '';
+    $('#list').innerHTML = cards.join('') || (!loaded ? `<div class="empty">불러오는 중…</div>` : `
+      <div class="empty"><span class="big">🏡</span>아직 등록된 부동산이 없어요.<br>아래 <b>＋ 부동산 추가</b> 버튼으로 시작해 보세요.</div>`);
+  }
+
+  // ───── 상세 화면 ─────
+  let detailId = null, detailYear = now.getFullYear();
+
+  function renderDetail() {
+    const p = find(detailId);
+    if (!p) return showHome();
+    const cur = ymKey(new Date().getFullYear(), new Date().getMonth() + 1);
+
+    const info = [
+      ['월세', p.rent ? `${won(p.rent)}${p.payDay ? ` (매월 ${p.payDay}일)` : ''}` : ''],
+      ['보증금', p.deposit ? won(p.deposit) : ''],
+      ['임차인', p.tenant],
+      ['연락처', p.phone],
+      ['계약 기간', (p.contractStart || p.contractEnd) ? `${p.contractStart || '?'} ~ ${p.contractEnd || '?'}` : ''],
+      ['메모', p.memo],
+    ].filter(([, v]) => v).map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');
+
+    let total = 0, lateSum = 0;
+    const rows = Array.from({ length: 12 }, (_, i) => {
+      const key = ymKey(detailYear, i + 1);
+      const st = statusOf(p, key);
+      const rec = p.payments?.[key];
+      if (st === 'paid') total += rec.amount || 0;
+      if (st === 'late') lateSum += p.rent || 0;
+      const desc = st === 'paid'
+        ? `<b>${won(rec.amount)}</b> · ${shortDate(rec.date)} 입금${rec.memo ? ` · ${esc(rec.memo)}` : ''}`
+        : (st === 'na' ? '–' : won(p.rent));
+      return `
+        <button class="row ${key === cur ? 'now' : ''}" data-act="pay" data-id="${p.id}" data-key="${key}">
+          <span class="m">${i + 1}월</span>
+          <span class="d">${desc}</span>
+          <span class="chip ${st}">${STATUS_LABEL[st]}</span>
+        </button>`;
+    }).join('');
+
+    $('#view-detail').innerHTML = `
+      <button class="back" data-act="home">‹ 목록으로</button>
+      <div class="detail-head">
+        <h2><span class="badge">${esc(p.type)}</span>${esc(p.name)}</h2>
+        <p class="addr">${esc(p.address)}</p>
+        <div class="actions">
+          <button class="primary" data-act="map" data-id="${p.id}">📍 네이버지도에서 위치 보기</button>
+          <button data-act="copy" data-id="${p.id}">주소 복사</button>
+          ${p.phone ? `<button data-act="call" data-id="${p.id}">📞 전화</button>` : ''}
+        </div>
+        ${info ? `<dl class="info">${info}</dl>` : ''}
+      </div>
+
+      <div class="section-title">월세 입금 이력
+        <span class="year-nav">
+          <button data-act="year" data-d="-1" aria-label="이전 해">‹</button><b>${detailYear}년</b>
+          <button data-act="year" data-d="1" aria-label="다음 해">›</button>
+        </span>
+      </div>
+      <div class="ledger">${rows}</div>
+      <div class="year-total"><span>${detailYear}년 입금 합계 <b>${won(total)}</b></span>${lateSum ? `<span>미입금 <b style="color:var(--late)">${won(lateSum)}</b></span>` : ''}</div>
+
+      <div class="detail-foot">
+        <button data-act="edit" data-id="${p.id}">✏️ 정보 수정</button>
+        <button class="danger" data-act="delete" data-id="${p.id}">삭제</button>
+      </div>`;
+  }
+
+  function showDetail(id, push = true) {
+    detailId = id; detailYear = viewY;
+    $('#view-home').hidden = true; $('#view-detail').hidden = false;
+    renderDetail(); window.scrollTo(0, 0);
+    if (push) history.pushState({ id }, '');
+  }
+  function showHome() {
+    detailId = null;
+    $('#view-detail').hidden = true; $('#view-home').hidden = false;
+    renderHome();
+  }
+  function refresh() { detailId ? renderDetail() : renderHome(); }
+  window.addEventListener('popstate', (e) => {
+    closeSheets();
+    e.state?.id && find(e.state.id) ? showDetail(e.state.id, false) : showHome();
+  });
+
+  // ───── 시트 ─────
+  function openSheet(id) { $(id).hidden = false; document.body.style.overflow = 'hidden'; }
+  function closeSheets() {
+    document.querySelectorAll('.overlay').forEach((o) => (o.hidden = true));
+    document.body.style.overflow = '';
+  }
+
+  // 금액 입력칸: 숫자만 + 천 단위 쉼표
+  document.addEventListener('input', (e) => {
+    if (e.target.matches('[data-money]')) {
+      const n = num(e.target.value);
+      e.target.value = n ? n.toLocaleString('ko-KR') : '';
+    }
+  });
+
+  // 부동산 추가/수정
+  let editId = null;
+  const form = $('#form');
+  function openForm(id) {
+    editId = id || null;
+    const p = find(id) || {};
+    form.reset();
+    $('#form-title').textContent = id ? '부동산 정보 수정' : '부동산 추가';
+    for (const k of ['name', 'address', 'tenant', 'phone', 'contractStart', 'contractEnd', 'memo']) form[k].value = p[k] || '';
+    form.type.value = p.type || '토지';
+    form.rent.value = p.rent ? p.rent.toLocaleString('ko-KR') : '';
+    form.deposit.value = p.deposit ? p.deposit.toLocaleString('ko-KR') : '';
+    form.payDay.value = p.payDay || '';
+    openSheet('#sheet-form');
+    $('#sheet-form .sheet').scrollTop = 0;
+  }
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = {
+      name: form.name.value.trim(), type: form.type.value, address: form.address.value.trim(),
+      rent: num(form.rent.value), payDay: Math.min(31, num(form.payDay.value)), deposit: num(form.deposit.value),
+      tenant: form.tenant.value.trim(), phone: form.phone.value.trim(),
+      contractStart: form.contractStart.value, contractEnd: form.contractEnd.value, memo: form.memo.value.trim(),
+    };
+    if (!v.name || !v.address) return toast('이름과 주소는 꼭 입력해 주세요');
+    let p = find(editId);
+    if (p) Object.assign(p, v);
+    else { p = { id: uid(), sort: Date.now(), createdAt: todayStr(), ...v }; data.properties.push(p); }
+    saveProp(p); closeSheets(); refresh();
+    toast(editId ? '수정했어요' : '추가했어요');
+  });
+
+  // 입금 기록
+  let payCtx = null;
+  const payForm = $('#pay-form');
+  function openPay(id, key) {
+    const p = find(id); if (!p) return;
+    const rec = p.payments?.[key];
+    payCtx = { id, key };
+    const [y, m] = key.split('-').map(Number);
+    $('#pay-title').textContent = `${y}년 ${m}월 월세`;
+    $('#pay-sub').textContent = `${p.name}${p.rent ? ` · 월 ${won(p.rent)}` : ''}`;
+    const t = todayStr();
+    payForm.date.value = rec?.date || (t.slice(0, 7) === key ? t : `${key}-${pad(Math.min(p.payDay || 1, 28))}`);
+    const amt = rec?.amount ?? p.rent;
+    payForm.amount.value = amt ? amt.toLocaleString('ko-KR') : '';
+    payForm.memo.value = rec?.memo || '';
+    $('#unpay-btn').hidden = !rec?.paid;
+    openSheet('#sheet-pay');
+  }
+  payForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const p = find(payCtx.id);
+    p.payments = p.payments || {};
+    p.payments[payCtx.key] = { paid: true, date: payForm.date.value, amount: num(payForm.amount.value), memo: payForm.memo.value.trim() };
+    saveProp(p); closeSheets(); refresh(); toast('입금 확인했어요');
+  });
+
+  // 백업
+  function exportData() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `부동산관리_백업_${todayStr()}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  $('#import-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0]; e.target.value = '';
+    if (!file) return;
+    try {
+      const obj = JSON.parse(await file.text());
+      if (!Array.isArray(obj.properties)) throw 0;
+      const list = obj.properties.filter((p) => p && p.name && p.address)
+        .map((p, i) => ({ type: '토지', createdAt: todayStr(), sort: i + 1, ...p, id: String(p.id || uid()).replace(/[.#$/\[\]]/g, '') }));
+      if (data.properties.length && !confirm(`지금 있는 ${data.properties.length}곳을 지우고, 백업 파일의 ${list.length}곳으로 바꿀까요?`)) return;
+      data = { properties: list };
+      set(propsRef(), Object.fromEntries(list.map((p) => [p.id, p]))).catch(fail);
+      closeSheets(); showHome(); toast(`${list.length}곳을 불러왔어요`);
+    } catch { toast('백업 파일을 읽지 못했어요'); }
+  });
+  function bulkAdd() {
+    const lines = $('#bulk').value.split('\n').map((s) => s.trim()).filter(Boolean);
+    if (!lines.length) return toast('주소를 붙여 넣어 주세요');
+    const added = {};
+    lines.forEach((address, i) => {
+      const parts = address.split(/\s+/);
+      const p = {
+        id: uid(), sort: Date.now() + i, createdAt: todayStr(), type: /\s산\s?\d/.test(address) ? '임야' : '토지',
+        name: parts.slice(-2).join(' '), address, rent: 0, payDay: 0, deposit: 0,
+        tenant: '', phone: '', contractStart: '', contractEnd: '', memo: '',
+      };
+      data.properties.push(p); added[p.id] = p;
+    });
+    $('#bulk').value = '';
+    update(propsRef(), added).catch(fail);
+    closeSheets(); showHome(); toast(`${lines.length}곳을 추가했어요`);
+  }
+
+  // ───── 버튼 처리 ─────
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('overlay')) return closeSheets();
+    const el = e.target.closest('[data-act]');
+    if (!el) return;
+    const { act, id, key, d } = el.dataset;
+    const p = id && find(id);
+    switch (act) {
+      case 'add': openForm(); break;
+      case 'edit': openForm(id); break;
+      case 'close': closeSheets(); break;
+      case 'settings': openSheet('#sheet-settings'); break;
+      case 'detail': showDetail(id); break;
+      case 'home': history.state?.id ? history.back() : showHome(); break;
+      case 'map': openMap(p?.address); break;
+      case 'map-form': openMap(form.address.value); break;
+      case 'pay': openPay(id, key); break;
+      case 'unpay': {
+        const t = find(payCtx.id);
+        if (t?.payments) delete t.payments[payCtx.key];
+        if (t) saveProp(t);
+        closeSheets(); refresh(); toast('입금 기록을 지웠어요');
+        break;
+      }
+      case 'month': {
+        viewM += Number(d);
+        if (viewM < 1) { viewM = 12; viewY--; } else if (viewM > 12) { viewM = 1; viewY++; }
+        renderHome(); break;
+      }
+      case 'year': detailYear += Number(d); renderDetail(); break;
+      case 'copy':
+        navigator.clipboard?.writeText(p.address).then(() => toast('주소를 복사했어요'), () => toast('복사하지 못했어요'));
+        break;
+      case 'call': location.href = 'tel:' + p.phone.replace(/[^\d+]/g, ''); break;
+      case 'delete':
+        if (confirm(`'${p.name}'을(를) 삭제할까요?\n입금 이력도 함께 지워집니다.`)) {
+          data.properties = data.properties.filter((x) => x.id !== id);
+          removeProp(id); toast('삭제했어요');
+          history.state?.id ? history.back() : showHome();
+        }
+        break;
+      case 'share': {
+        const url = shareUrl();
+        if (navigator.share) navigator.share({ title: '내 부동산 관리', url }).catch(() => {});
+        else navigator.clipboard?.writeText(url).then(() => toast('링크를 복사했어요'), () => prompt('이 링크를 복사해서 보내 주세요', url));
+        break;
+      }
+      case 'newlist': {
+        const b = crypto.getRandomValues(new Uint8Array(24));
+        const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+        location.href = location.pathname + '?k=re_' + Array.from(b, (x) => abc[x % abc.length]).join('');
+        break;
+      }
+      case 'export': exportData(); break;
+      case 'import': $('#import-file').click(); break;
+      case 'bulk': bulkAdd(); break;
+    }
+  });
+
+  if (LIST_KEY) { renderHome(); startSync(); }
+  else { $('#view-home').hidden = true; $('#view-nokey').hidden = false; }
+</script>
+</body>
+</html>
