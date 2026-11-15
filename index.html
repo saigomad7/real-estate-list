@@ -56,7 +56,10 @@
   [hidden] { display: none !important; }
 
   /* 머리글 */
-  .header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .menu { display: flex; gap: 8px; margin-bottom: 14px; }
+  .menu .help-btn { flex: 1; height: 44px; padding: 0 6px; font-size: 0.88rem; box-shadow: var(--shadow); }
+  .menu .help-btn span { color: var(--accent); font-weight: 700; margin-left: 4px; }
   .logo {
     width: 40px; height: 40px; flex: none; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
@@ -111,6 +114,13 @@
   .region span { color: var(--faint); font-weight: 500; margin-left: 3px; }
   .region.on { background: var(--accent); color: #fff; border-color: var(--accent); }
   .region.on span { color: rgba(255, 255, 255, 0.8); }
+
+  /* 찜한 위치 */
+  .fav-memo { font-size: 0.88rem; line-height: 1.55; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .fav-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .fav-foot small { font-size: 0.78rem; color: var(--faint); }
+  .fav-foot button { padding: 7px 12px; border-radius: 7px; font-size: 0.82rem; font-weight: 600; border: 1px solid var(--border-2); background: var(--surface); margin-left: 6px; }
+  .fav-foot .danger { color: var(--late); }
 
   /* 부동산 카드 */
   .card {
@@ -270,7 +280,10 @@
         <h1>내 부동산 관리</h1>
         <p class="tagline">위치 · 월세 입금 확인</p>
       </div>
+    </div>
+    <div class="menu">
       <button class="help-btn" data-act="help">사용법</button>
+      <button class="help-btn" data-act="favs">찜한 위치<span id="fav-count"></span></button>
       <button class="help-btn" data-act="settings">설정</button>
     </div>
 
@@ -439,7 +452,18 @@
     </div>
 
     <div class="help">
-      <h3>9. 휴대폰 바탕화면에 넣기</h3>
+      <h3>9. 찜한 위치</h3>
+      <ol>
+        <li>맨 위 <b>찜한 위치</b>를 누릅니다.</li>
+        <li>주소나 장소 이름을 적고 <b>지도 보기</b>를 누르면 네이버지도에서 위치를 볼 수 있습니다.</li>
+        <li>마음에 들면 돌아와서 <b>+ 이 위치 찜하기</b>를 누르고, 제목과 내용을 적어 <b>찜하기</b>를 누릅니다.</li>
+        <li>찜한 목록에서 <b>위치</b>를 누르면 언제든 다시 지도로 볼 수 있습니다.</li>
+      </ol>
+      <p>찜한 목록도 링크를 함께 쓰는 사람 모두에게 보입니다.</p>
+    </div>
+
+    <div class="help">
+      <h3>10. 휴대폰 바탕화면에 넣기</h3>
       <ul>
         <li><b>아이폰</b>: 사파리 아래쪽 공유 버튼(네모에 화살표) → <b>홈 화면에 추가</b></li>
         <li><b>갤럭시</b>: 오른쪽 위 점 세 개(⋮) → <b>홈 화면에 추가</b></li>
@@ -449,6 +473,40 @@
 
     <button class="btn" type="button" data-act="close">닫기</button>
   </div>
+</div>
+
+<!-- 찜한 위치 시트 -->
+<div class="overlay" id="sheet-fav" hidden>
+  <div class="sheet">
+    <div class="sheet-head"><h2>찜한 위치</h2><button type="button" data-act="close">✕</button></div>
+    <p class="hint" style="margin-top:-6px">관심 가는 위치를 지도에서 찾아보고, 잊지 않게 적어 두는 곳입니다.</p>
+    <div class="field"><label>지도에서 찾아보기</label>
+      <div class="with-btn">
+        <input id="fav-q" placeholder="주소나 장소 이름" enterkeyhint="search">
+        <button type="button" data-act="fav-search">지도 보기</button>
+      </div>
+    </div>
+    <button class="btn" type="button" data-act="fav-new">+ 이 위치 찜하기</button>
+    <div class="group-title">찜한 목록 <span id="fav-total" style="font-weight:500;color:var(--faint)"></span></div>
+    <div id="fav-list"></div>
+  </div>
+</div>
+
+<!-- 찜하기 입력 시트 -->
+<div class="overlay" id="sheet-favform" hidden>
+  <form class="sheet" id="fav-form" autocomplete="off">
+    <div class="sheet-head"><h2 id="fav-form-title">위치 찜하기</h2><button type="button" data-act="fav-back">✕</button></div>
+    <div class="field"><label>제목 <em>*</em></label><input name="title" placeholder="예) 강화도 바닷가 땅" required></div>
+    <div class="field"><label>위치 <em>*</em></label>
+      <div class="with-btn">
+        <input name="place" placeholder="주소나 장소 이름" required>
+        <button type="button" data-act="fav-check">지도 보기</button>
+      </div>
+    </div>
+    <p class="hint">네이버지도에서 <b>공유 → 링크 복사</b>한 주소를 붙여 넣어도 됩니다.</p>
+    <div class="field"><label>내용</label><textarea name="memo" placeholder="왜 관심이 갔는지, 가격, 연락처 등 자유롭게 적어 두세요"></textarea></div>
+    <button class="btn" type="submit">찜하기</button>
+  </form>
 </div>
 
 <!-- 설정 시트 -->
@@ -495,6 +553,8 @@
   }
   const shareUrl = () => location.origin + location.pathname + '?k=' + LIST_KEY;
   const propsRef = () => ref(db, `families/${LIST_KEY}/estate/props`);
+  const favsRef = () => ref(db, `families/${LIST_KEY}/estate/favs`);
+  const favRef = (id) => ref(db, `families/${LIST_KEY}/estate/favs/${id}`);
   const propRef = (id) => ref(db, `families/${LIST_KEY}/estate/props/${id}`);
 
   // ───── 데이터 ─────
@@ -518,6 +578,10 @@
       try { localStorage.setItem(KEY + ':cache:' + LIST_KEY, JSON.stringify(data)); } catch {}
       refresh();
     }, () => toast('자료를 불러오지 못했어요'));
+    onValue(favsRef(), (snap) => {
+      data.favs = Object.values(snap.val() || {}).filter((f) => f && f.id && f.title).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+      renderFavs();
+    });
   }
 
   // ───── 도우미 ─────
@@ -530,6 +594,7 @@
   const num = (s) => Number(String(s ?? '').replace(/[^\d]/g, '')) || 0;
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   const find = (id) => data.properties.find((p) => p.id === id);
+  const findFav = (id) => (data.favs || []).find((f) => f.id === id);
   const shortDate = (s) => s ? `${Number(s.slice(5, 7))}/${Number(s.slice(8, 10))}` : '';
 
   let toastTimer;
@@ -545,7 +610,7 @@
   function openMap(address) {
     const a = (address || '').trim();
     if (!a) return toast('주소를 먼저 입력해 주세요');
-    window.open('https://map.naver.com/p/search/' + encodeURIComponent(a), '_blank');
+    window.open(/^https?:\/\//i.test(a) ? a : 'https://map.naver.com/p/search/' + encodeURIComponent(a), '_blank');
   }
 
   // 그 달의 월세 상태: paid 입금완료 / late 미입금 / due 입금예정 / future 예정 / na 대상 아님
@@ -793,6 +858,52 @@
     saveProp(p); closeSheets(); refresh(); toast('입금 확인했어요');
   });
 
+  // ───── 찜한 위치 ─────
+  let favEditId = null;
+  const favForm = $('#fav-form');
+  function renderFavs() {
+    const favs = data.favs || [];
+    $('#fav-count').textContent = favs.length ? favs.length : '';
+    $('#fav-total').textContent = favs.length ? `${favs.length}곳` : '';
+    $('#fav-list').innerHTML = favs.map((f) => `
+      <div class="card">
+        <div class="card-top">
+          <div class="grow">
+            <h3>${esc(f.title)}</h3>
+            <p class="addr">${/^https?:\/\//i.test(f.place) ? '네이버지도 링크' : esc(f.place)}</p>
+          </div>
+          <button class="map-btn" data-act="fav-map" data-id="${f.id}">${ICON_PIN}위치</button>
+        </div>
+        ${f.memo ? `<p class="fav-memo">${esc(f.memo)}</p>` : ''}
+        <div class="fav-foot">
+          <small>${esc(f.createdAt || '')} 찜</small>
+          <span><button data-act="fav-edit" data-id="${f.id}">수정</button><button class="danger" data-act="fav-del" data-id="${f.id}">삭제</button></span>
+        </div>
+      </div>`).join('') || `<div class="empty">아직 찜한 위치가 없어요.<br>위에서 지도로 찾아본 뒤 <b>+ 이 위치 찜하기</b>를 눌러 보세요.</div>`;
+  }
+  function openFavForm(id) {
+    const f = findFav(id);
+    favEditId = f ? id : null;
+    favForm.reset();
+    $('#fav-form-title').textContent = f ? '찜한 위치 수정' : '위치 찜하기';
+    favForm.title.value = f?.title || '';
+    favForm.place.value = f ? f.place : $('#fav-q').value.trim();
+    favForm.memo.value = f?.memo || '';
+    closeSheets(); openSheet('#sheet-favform');
+  }
+  function openFavs() { closeSheets(); renderFavs(); openSheet('#sheet-fav'); }
+  favForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = { title: favForm.title.value.trim(), place: favForm.place.value.trim(), memo: favForm.memo.value.trim() };
+    if (!v.title || !v.place) return toast('제목과 위치는 꼭 입력해 주세요');
+    const f = findFav(favEditId) || { id: uid(), ts: Date.now(), createdAt: todayStr() };
+    Object.assign(f, v);
+    if (!favEditId) { data.favs = [f, ...(data.favs || [])]; $('#fav-q').value = ''; }
+    set(favRef(f.id), f).catch(fail);
+    openFavs(); toast(favEditId ? '수정했어요' : '찜했어요');
+  });
+  $('#fav-q').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); openMap(e.target.value); } });
+
   // 백업
   function exportData() {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -811,8 +922,13 @@
       const list = obj.properties.filter((p) => p && p.name && p.address)
         .map((p, i) => ({ type: '토지', createdAt: todayStr(), sort: i + 1, ...p, id: String(p.id || uid()).replace(/[.#$/\[\]]/g, '') }));
       if (data.properties.length && !confirm(`지금 있는 ${data.properties.length}곳을 지우고, 백업 파일의 ${list.length}곳으로 바꿀까요?`)) return;
-      data = { properties: list };
+      data = { properties: list, favs: data.favs || [] };
       set(propsRef(), Object.fromEntries(list.map((p) => [p.id, p]))).catch(fail);
+      if (Array.isArray(obj.favs)) {
+        const favs = obj.favs.filter((f) => f && f.title && f.place).map((f) => ({ ...f, id: String(f.id || uid()).replace(/[.#$/\[\]]/g, '') }));
+        data.favs = favs;
+        set(favsRef(), Object.fromEntries(favs.map((f) => [f.id, f]))).catch(fail);
+      }
       closeSheets(); showHome(); toast(`${list.length}곳을 불러왔어요`);
     } catch { toast('백업 파일을 읽지 못했어요'); }
   });
@@ -887,6 +1003,21 @@
         const b = crypto.getRandomValues(new Uint8Array(24));
         const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
         location.href = location.pathname + '?k=re_' + Array.from(b, (x) => abc[x % abc.length]).join('');
+        break;
+      }
+      case 'favs': openFavs(); break;
+      case 'fav-search': openMap($('#fav-q').value); break;
+      case 'fav-new': openFavForm(); break;
+      case 'fav-back': openFavs(); break;
+      case 'fav-check': openMap(favForm.place.value); break;
+      case 'fav-map': openMap(findFav(id)?.place); break;
+      case 'fav-edit': openFavForm(id); break;
+      case 'fav-del': {
+        const f = findFav(id);
+        if (f && confirm(`'${f.title}'을(를) 찜한 목록에서 지울까요?`)) {
+          data.favs = data.favs.filter((x) => x.id !== id);
+          remove(favRef(id)).catch(fail); renderFavs(); toast('지웠어요');
+        }
         break;
       }
       case 'export': exportData(); break;
