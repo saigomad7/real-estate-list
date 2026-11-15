@@ -102,6 +102,16 @@
   }
   .section-title span { font-size: 0.8rem; font-weight: 500; color: var(--faint); }
 
+  /* 지역 고르기 */
+  .regions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .region {
+    padding: 10px 13px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; white-space: nowrap;
+    background: var(--surface); color: var(--text); border: 1px solid var(--border-2); box-shadow: var(--shadow);
+  }
+  .region span { color: var(--faint); font-weight: 500; margin-left: 3px; }
+  .region.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .region.on span { color: rgba(255, 255, 255, 0.8); }
+
   /* 부동산 카드 */
   .card {
     background: var(--surface); border: 1px solid var(--border); border-left: 6px solid var(--line);
@@ -274,6 +284,7 @@
     </div>
 
     <div class="section-title">부동산 목록 <span id="count-label"></span></div>
+    <div class="regions" id="regions"></div>
     <div id="list"></div>
 
     <button class="fab" data-act="add">+ 부동산 추가</button>
@@ -361,7 +372,17 @@
     </div>
 
     <div class="help">
-      <h3>2. 월세 정보 넣기</h3>
+      <h3>2. 지역별로 골라 보기</h3>
+      <ol>
+        <li>목록 위에 <b>전체 (9)</b>, <b>인천 (1)</b> 같은 지역 버튼이 있습니다. 괄호 안 숫자는 등록된 개수입니다.</li>
+        <li>지역을 누르면 그 지역의 부동산만 보입니다.</li>
+        <li><b>전체</b>를 누르면 다시 모두 보입니다.</li>
+      </ol>
+      <p>지역은 주소 맨 앞(서울, 경기, 충청남도 등)을 보고 자동으로 나눕니다.</p>
+    </div>
+
+    <div class="help">
+      <h3>3. 월세 정보 넣기</h3>
       <ol>
         <li>목록에서 부동산 <b>이름</b>을 누릅니다.</li>
         <li>맨 아래 <b>정보 수정</b>을 누릅니다.</li>
@@ -372,7 +393,7 @@
     </div>
 
     <div class="help">
-      <h3>3. 월세 입금 확인하기</h3>
+      <h3>4. 월세 입금 확인하기</h3>
       <ol>
         <li>월세가 들어오면, 목록에서 그 부동산의 <span class="chip late">미입금</span> 또는 <span class="chip due">입금 예정</span> 표시를 누릅니다.</li>
         <li>입금일과 금액을 확인하고 <b>입금 확인</b>을 누릅니다.</li>
@@ -382,7 +403,7 @@
     </div>
 
     <div class="help">
-      <h3>4. 색 표시의 뜻</h3>
+      <h3>5. 색 표시의 뜻</h3>
       <ul>
         <li><span class="chip paid">입금</span> 월세가 들어왔습니다.</li>
         <li><span class="chip due">입금 예정</span> 아직 입금일이 지나지 않았습니다.</li>
@@ -391,7 +412,7 @@
     </div>
 
     <div class="help">
-      <h3>5. 지난 달 · 일 년 이력 보기</h3>
+      <h3>6. 지난 달 · 일 년 이력 보기</h3>
       <ul>
         <li>맨 위 날짜 양옆의 <b>‹ ›</b> 를 누르면 다른 달을 볼 수 있습니다.</li>
         <li>부동산 이름을 누르면 1월부터 12월까지 입금 이력과 한 해 합계가 보입니다.</li>
@@ -399,7 +420,7 @@
     </div>
 
     <div class="help">
-      <h3>6. 추가 · 삭제</h3>
+      <h3>7. 추가 · 삭제</h3>
       <ul>
         <li><b>추가</b>: 맨 아래 <b>+ 부동산 추가</b>를 누르고 이름과 주소를 적은 뒤 저장합니다.</li>
         <li><b>삭제</b>: 부동산 이름을 누른 뒤 맨 아래 <b>삭제</b>를 누릅니다.</li>
@@ -408,7 +429,7 @@
     </div>
 
     <div class="help">
-      <h3>7. 다른 사람과 함께 보기</h3>
+      <h3>8. 다른 사람과 함께 보기</h3>
       <ol>
         <li>오른쪽 위 <b>설정</b>을 누릅니다.</li>
         <li><b>이 목록 링크 보내기</b>를 눌러 카카오톡 등으로 보냅니다.</li>
@@ -418,7 +439,7 @@
     </div>
 
     <div class="help">
-      <h3>8. 휴대폰 바탕화면에 넣기</h3>
+      <h3>9. 휴대폰 바탕화면에 넣기</h3>
       <ul>
         <li><b>아이폰</b>: 사파리 아래쪽 공유 버튼(네모에 화살표) → <b>홈 화면에 추가</b></li>
         <li><b>갤럭시</b>: 오른쪽 위 점 세 개(⋮) → <b>홈 화면에 추가</b></li>
@@ -544,6 +565,18 @@
   const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.9-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.1-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
   const STATUS_LABEL = { paid: '입금 완료', late: '미입금', due: '입금 예정', future: '예정', na: '기록하기' };
 
+  // ───── 지역 (주소 맨 앞 시·도) ─────
+  const REGION_ORDER = ['서울', '경기', '인천', '강원', '충북', '충남', '대전', '세종', '전북', '전남', '광주', '경북', '경남', '대구', '울산', '부산', '제주', '기타'];
+  const REGION_PREFIX = [['서울', '서울'], ['경기', '경기'], ['인천', '인천'], ['강원', '강원'], ['충청북', '충북'], ['충북', '충북'],
+    ['충청남', '충남'], ['충남', '충남'], ['대전', '대전'], ['세종', '세종'], ['전라북', '전북'], ['전북', '전북'], ['전라남', '전남'], ['전남', '전남'],
+    ['광주', '광주'], ['경상북', '경북'], ['경북', '경북'], ['경상남', '경남'], ['경남', '경남'], ['대구', '대구'], ['울산', '울산'], ['부산', '부산'], ['제주', '제주']];
+  function regionOf(address) {
+    const first = String(address || '').trim().split(/\s+/)[0] || '';
+    const hit = REGION_PREFIX.find(([pre]) => first.startsWith(pre));
+    return hit ? hit[1] : '기타';
+  }
+  let region = '전체';
+
   // ───── 목록 화면 ─────
   let viewY = now.getFullYear(), viewM = now.getMonth() + 1;
 
@@ -551,13 +584,24 @@
     const key = ymKey(viewY, viewM);
     $('#month-label').textContent = `${viewY}년 ${viewM}월`;
 
-    let expected = 0, received = 0, target = 0, paidCnt = 0, lateCnt = 0;
+    // 지역별 개수와 고르기 버튼
+    const counts = {};
+    for (const p of data.properties) { const r = regionOf(p.address); counts[r] = (counts[r] || 0) + 1; }
+    if (region !== '전체' && !counts[region]) region = '전체';
+    const regionBtn = (r, n) => `<button class="region ${r === region ? 'on' : ''}" data-act="region" data-r="${r}">${r}<span>(${n})</span></button>`;
+    $('#regions').innerHTML = data.properties.length
+      ? regionBtn('전체', data.properties.length) + REGION_ORDER.filter((r) => counts[r]).map((r) => regionBtn(r, counts[r])).join('')
+      : '';
+
+    let expected = 0, received = 0, target = 0, paidCnt = 0, lateCnt = 0, shown = 0;
     const cards = data.properties.map((p) => {
       const st = statusOf(p, key);
       const rec = p.payments?.[key];
       if (st !== 'na') { target++; expected += p.rent || rec?.amount || 0; }
       if (st === 'paid') { paidCnt++; received += rec.amount || 0; }
       if (st === 'late') lateCnt++;
+      if (region !== '전체' && regionOf(p.address) !== region) return '';   // 요약은 전체 기준, 목록만 지역으로 거름
+      shown++;
 
       const rentLine = p.rent
         ? `<b>월 ${won(p.rent)}</b>${p.payDay ? ` <small>· 매월 ${p.payDay}일</small>` : ''}`
@@ -583,15 +627,15 @@
 
     const pct = expected ? Math.min(100, Math.round((received / expected) * 100)) : 0;
     $('#summary-body').innerHTML = `
-      <div class="sum-main"><small>이번 달 받을 월세</small><b>${won(expected)}</b></div>
+      <div class="sum-main"><small>이번 달 받을 월세 (전체)</small><b>${won(expected)}</b></div>
       <div class="bar"><i style="width:${pct}%"></i></div>
       <div class="sum-row">
         <div><small>입금 완료</small><b>${paidCnt}곳 · ${won(received)}</b></div>
         <div><small>미입금</small><b>${lateCnt}곳</b></div>
       </div>`;
-    $('.sum-main small').textContent = `${viewM}월 받을 월세`;
+    $('.sum-main small').textContent = `${viewM}월 받을 월세 (전체)`;
 
-    $('#count-label').textContent = data.properties.length ? `총 ${data.properties.length}곳` : '';
+    $('#count-label').textContent = data.properties.length ? (region === '전체' ? `총 ${shown}곳` : `${region} ${shown}곳`) : '';
     $('#list').innerHTML = cards.join('') || (!loaded ? `<div class="empty">불러오는 중…</div>` : `
       <div class="empty">아직 등록된 부동산이 없어요.<br>아래 <b>+ 부동산 추가</b> 버튼으로 시작해 보세요.</div>`);
   }
@@ -801,6 +845,7 @@
       case 'add': openForm(); break;
       case 'edit': openForm(id); break;
       case 'close': closeSheets(); break;
+      case 'region': region = el.dataset.r; renderHome(); break;
       case 'settings': openSheet('#sheet-settings'); break;
       case 'help': openSheet('#sheet-help'); $('#sheet-help .sheet').scrollTop = 0; break;
       case 'detail': showDetail(id); break;
