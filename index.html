@@ -52,14 +52,25 @@
   [hidden] { display: none !important; }
 
   /* 헤더 */
-  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .header { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+  .help-btn {
+    flex: none; height: 40px; padding: 0 13px; border-radius: 99px; font-size: 0.85rem; font-weight: 700;
+    background: var(--surface); color: var(--accent-deep); box-shadow: var(--shadow); white-space: nowrap;
+  }
+  .help { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px 15px; margin-bottom: 10px; }
+  .help h3 { font-size: 1.02rem; margin-bottom: 8px; }
+  .help ol, .help ul { padding-left: 1.25rem; }
+  .help li { font-size: 0.92rem; line-height: 1.6; margin-bottom: 4px; word-break: keep-all; }
+  .help p { font-size: 0.92rem; line-height: 1.6; word-break: keep-all; }
+  .help .chip { display: inline-block; padding: 3px 10px; font-size: 0.8rem; }
+  .help .warn { color: var(--late); font-weight: 600; }
   .logo {
-    width: 46px; height: 46px; flex: none;
+    width: 42px; height: 42px; flex: none;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.4rem; background: var(--surface); border-radius: 50%;
     box-shadow: var(--shadow);
   }
-  .header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.01em; }
+  .header h1 { font-size: 1.2rem; font-weight: 700; white-space: nowrap; }
   .tagline { font-size: 0.8rem; color: var(--text-dim); margin-top: 2px; }
   .header .grow { flex: 1; min-width: 0; }
   .icon-btn {
@@ -236,6 +247,7 @@
         <h1>내 부동산 관리</h1>
         <p class="tagline">위치 · 월세 입금 확인</p>
       </div>
+      <button class="help-btn" data-act="help">사용법</button>
       <button class="icon-btn" data-act="settings" aria-label="설정">⚙️</button>
     </div>
 
@@ -320,6 +332,89 @@
     <button class="btn" type="submit">✓ 입금 확인</button>
     <button class="btn warn" type="button" data-act="unpay" id="unpay-btn">입금 기록 지우기</button>
   </form>
+</div>
+
+<!-- 사용법 시트 -->
+<div class="overlay" id="sheet-help" hidden>
+  <div class="sheet">
+    <div class="sheet-head"><h2>사용법</h2><button type="button" data-act="close">✕</button></div>
+
+    <div class="help">
+      <h3>📍 위치 보기</h3>
+      <ol>
+        <li>목록에서 보고 싶은 부동산 오른쪽의 <b>📍 위치</b> 버튼을 누릅니다.</li>
+        <li>네이버지도가 열리면서 그 주소의 위치가 표시됩니다.</li>
+      </ol>
+    </div>
+
+    <div class="help">
+      <h3>✏️ 월세 정보 넣기</h3>
+      <ol>
+        <li>목록에서 부동산 <b>이름</b>을 누릅니다.</li>
+        <li>맨 아래 <b>정보 수정</b>을 누릅니다.</li>
+        <li>월세 금액과 입금일(매월 며칠)을 적습니다. 임차인, 연락처, 메모도 적을 수 있습니다.</li>
+        <li><b>저장</b>을 누릅니다.</li>
+      </ol>
+      <p>월세가 없는 땅은 비워 두시면 됩니다.</p>
+    </div>
+
+    <div class="help">
+      <h3>✓ 월세 입금 확인하기</h3>
+      <ol>
+        <li>월세가 들어오면, 목록에서 그 부동산의 <span class="chip late">미입금</span> 또는 <span class="chip due">입금 예정</span> 표시를 누릅니다.</li>
+        <li>입금일과 금액을 확인하고 <b>✓ 입금 확인</b>을 누릅니다.</li>
+        <li>표시가 <span class="chip paid">✓ 입금</span>으로 바뀝니다.</li>
+      </ol>
+      <p>잘못 눌렀으면 그 표시를 다시 누르고 <b>입금 기록 지우기</b>를 누르세요.</p>
+    </div>
+
+    <div class="help">
+      <h3>🎨 색 표시의 뜻</h3>
+      <ul>
+        <li><span class="chip paid">✓ 입금</span> 월세가 들어왔습니다.</li>
+        <li><span class="chip due">입금 예정</span> 아직 입금일이 지나지 않았습니다.</li>
+        <li><span class="chip late">미입금</span> 입금일이 지났는데 확인이 안 됐습니다.</li>
+      </ul>
+    </div>
+
+    <div class="help">
+      <h3>📅 지난 달 · 일 년 이력 보기</h3>
+      <ul>
+        <li>맨 위 파란 상자의 <b>‹ ›</b> 를 누르면 다른 달을 볼 수 있습니다.</li>
+        <li>부동산 이름을 누르면 1월부터 12월까지 입금 이력과 한 해 합계가 보입니다.</li>
+      </ul>
+    </div>
+
+    <div class="help">
+      <h3>➕ 추가 · 삭제</h3>
+      <ul>
+        <li><b>추가</b>: 맨 아래 <b>＋ 부동산 추가</b>를 누르고 이름과 주소를 적은 뒤 저장합니다.</li>
+        <li><b>삭제</b>: 부동산 이름을 누른 뒤 맨 아래 <b>삭제</b>를 누릅니다.</li>
+      </ul>
+      <p class="warn">삭제하면 입금 이력까지 지워지고 되돌릴 수 없습니다.</p>
+    </div>
+
+    <div class="help">
+      <h3>👨‍👩‍👧 다른 사람과 함께 보기</h3>
+      <ol>
+        <li>오른쪽 위 <b>⚙️</b> 를 누릅니다.</li>
+        <li><b>📤 이 목록 링크 보내기</b>를 눌러 카카오톡 등으로 보냅니다.</li>
+        <li>받은 사람이 링크를 누르면 같은 목록이 보입니다.</li>
+      </ol>
+      <p class="warn">링크를 받은 사람은 내용을 고치거나 지울 수도 있으니, 믿을 수 있는 분에게만 보내세요.</p>
+    </div>
+
+    <div class="help">
+      <h3>📱 휴대폰 바탕화면에 넣기</h3>
+      <ul>
+        <li><b>아이폰</b>: 사파리 아래쪽 공유 버튼(네모에 화살표) → <b>홈 화면에 추가</b></li>
+        <li><b>갤럭시</b>: 오른쪽 위 점 세 개(⋮) → <b>홈 화면에 추가</b></li>
+      </ul>
+      <p>한 번 넣어 두면 다음부터는 아이콘만 누르면 열립니다.</p>
+    </div>
+
+    <button class="btn" type="button" data-act="close">닫기</button>
+  </div>
 </div>
 
 <!-- 설정 시트 -->
@@ -693,6 +788,7 @@
       case 'edit': openForm(id); break;
       case 'close': closeSheets(); break;
       case 'settings': openSheet('#sheet-settings'); break;
+      case 'help': openSheet('#sheet-help'); $('#sheet-help .sheet').scrollTop = 0; break;
       case 'detail': showDetail(id); break;
       case 'home': history.state?.id ? history.back() : showHome(); break;
       case 'map': openMap(p?.address); break;
